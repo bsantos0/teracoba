@@ -28,7 +28,7 @@ module "kantor-pusat" {
     project_name = local.nama_dynamic  
 }
 
-###
+##
 #module "kantor_cabang1" {
 #    source       = "./modules/network"
 #    cidr_vpc     = "192.168.0.0/16"
