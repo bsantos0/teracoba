@@ -1,0 +1,13 @@
+.terraform/
+.terraform.lock.hcl
+*.tfstate
+*.tfstate.backup
+
+*.pem
+*.pub
+kunci-*
+
+*.tfvars
+
+.DS_Store
+Thumbs.db
