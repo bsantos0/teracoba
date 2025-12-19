@@ -1,0 +1,47 @@
+name: Hancurkan Infrastruktur (Manual)
+
+# Pemicu: Hanya jalan kalau tombol dipencet manual
+on:
+  workflow_dispatch:
+    inputs:
+      # Kita bisa pilih mau hancurkan environment mana
+      environment:
+        description: 'Environment yang mau dihancurkan (dev / prod)'
+        required: true
+        default: 'dev'
+        type: choice
+        options:
+        - dev
+        - prod
+
+jobs:
+  musnahkan:
+    name: Destroy Terraform
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout Code
+      uses: actions/checkout@v3
+
+    - name: Setup Terraform
+      uses: hashicorp/setup-terraform@v2
+      with:
+        terraform_version: 1.5.6
+
+    - name: Configure AWS Credentials
+      uses: aws-actions/configure-aws-credentials@v2
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: ap-southeast-1
+
+    - name: Terraform Init
+      run: terraform init
+
+    - name: Pilih Workspace & Destroy
+      run: |
+        # Pilih workspace sesuai input tombol (dev/prod)
+        terraform workspace select ${{ inputs.environment }} || terraform workspace new ${{ inputs.environment }}
+        
+        # BOM ATOM DILUNCURKAN
+        terraform destroy -auto-approve
